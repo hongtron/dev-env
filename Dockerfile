@@ -1,9 +1,10 @@
-FROM ubuntu:16.04
+FROM debian:stretch
 
 # Locales
-ENV LANGUAGE=en_US.UTF-8
 ENV LANG=en_US.UTF-8
-RUN apt-get update && apt-get install -y locales && locale-gen en_US.UTF-8
+RUN apt-get update && apt-get install -y locales
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+RUN locale-gen en_US.UTF-8
 
 # Colors and italics for tmux
 COPY xterm-256color-italic.terminfo /root
@@ -23,28 +24,13 @@ RUN apt-get update && apt-get install -y \
       netcat-openbsd \
       rubygems \
       ruby-dev \
-      silversearcher-ag \
-      socat \
-      software-properties-common \
       tmux \
       tzdata \
       wget \
+      vim \
       zsh 
+
 RUN chsh -s /usr/bin/zsh
-
-# Install docker
-RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D &&\
-      echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" > /etc/apt/sources.list.d/docker.list &&\
-      apt-get install -y apt-transport-https &&\
-      apt-get update &&\
-      apt-get install -y docker-engine
-RUN  curl -o /usr/local/bin/docker-compose -L "https://github.com/docker/compose/releases/download/1.13.0/docker-compose-$(uname -s)-$(uname -m)" &&\
-     chmod +x /usr/local/bin/docker-compose
-
-# Install go
-RUN add-apt-repository ppa:longsleep/golang-backports
-RUN apt-get update
-RUN apt-get install -y golang-1.8-go
 
 # Install tmux
 WORKDIR /usr/local/src
@@ -56,7 +42,15 @@ RUN make
 RUN make install
 RUN rm -rf /usr/local/src/tmux*
 
-# Install neovim
+# Dotfiles 😎
+WORKDIR /usr/local/src
+RUN curl -L https://api.github.com/repos/hongtron/dotfiles/tarball/master > dotfiles.tar.gz
+RUN tar xzvf dotfiles.tar.gz
+RUN ls | grep hongtron-dotfiles | xargs -I % mv % dotfiles
+WORKDIR /usr/local/src/dotfiles
+RUN rake install
+
+# Install neovim v0.2.0
 RUN apt-get install -y \
       autoconf \
       automake \
@@ -78,4 +72,16 @@ RUN git reset --hard v0.2.0
 RUN make CMAKE_BUILD_TYPE=Release
 RUN make install
 RUN rm -rf /usr/local/src/neovim
+RUN gem install neovim
 
+# Mirror vim dotfiles to neovim
+COPY init.vim /root/.config/nvim/init.vim
+
+# Install rvm
+RUN curl -sSL https://rvm.io/mpapis.asc | gpg --import -
+RUN curl -sSL https://get.rvm.io | bash -s stable
+
+# Misc ruby
+RUN gem install bundler pry pry-byebug pry-rescue
+
+WORKDIR /root
