@@ -82,6 +82,11 @@ RUN curl -sSL https://rvm.io/mpapis.asc | gpg --import -
 RUN curl -sSL https://get.rvm.io | bash -s stable
 
 # Misc ruby
+ENV BUNDLE_PATH /root/gems
+ENV BUNDLE_HOME /root/gems
+ENV GEM_HOME /root/gems
+ENV GEM_PATH /root/gems
+ENV PATH /root/gems/bin:$PATH
 RUN gem install bundler pry pry-byebug pry-rescue
 
 WORKDIR /root
