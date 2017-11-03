@@ -88,3 +88,4 @@ RUN rvm install ruby --latest
 RUN gem install bundler pry pry-byebug pry-rescue
 
 WORKDIR /root
+CMD tmux
