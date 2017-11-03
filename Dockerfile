@@ -81,8 +81,7 @@ COPY init.vim /root/.config/nvim/init.vim
 RUN echo 'export rvm_prefix="$HOME"' > /root/.rvmrc
 RUN echo 'export rvm_path="$HOME/.rvm"' >> /root/.rvmrc
 RUN curl -sSL https://rvm.io/mpapis.asc | gpg --import -
-RUN curl -sSL https://get.rvm.io | bash -s stable
-RUN rvm install ruby --latest
+RUN curl -sSL https://get.rvm.io | bash -s stable --rails
 
 # Misc ruby
 RUN gem install bundler pry pry-byebug pry-rescue
