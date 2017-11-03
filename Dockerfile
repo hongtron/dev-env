@@ -78,15 +78,13 @@ RUN gem install neovim
 COPY init.vim /root/.config/nvim/init.vim
 
 # Install rvm
+RUN echo 'export rvm_prefix="$HOME"' > /root/.rvmrc
+RUN echo 'export rvm_path="$HOME/.rvm"' >> /root/.rvmrc
 RUN curl -sSL https://rvm.io/mpapis.asc | gpg --import -
 RUN curl -sSL https://get.rvm.io | bash -s stable
+RUN rvm install ruby --latest
 
 # Misc ruby
-ENV BUNDLE_PATH /root/gems
-ENV BUNDLE_HOME /root/gems
-ENV GEM_HOME /root/gems
-ENV GEM_PATH /root/gems
-ENV PATH /root/gems/bin:$PATH
 RUN gem install bundler pry pry-byebug pry-rescue
 
 WORKDIR /root
