@@ -42,14 +42,6 @@ RUN make
 RUN make install
 RUN rm -rf /usr/local/src/tmux*
 
-# Dotfiles 😎
-WORKDIR /usr/local/src
-RUN curl -L https://api.github.com/repos/hongtron/dotfiles/tarball/master > dotfiles.tar.gz
-RUN tar xzvf dotfiles.tar.gz
-RUN ls | grep hongtron-dotfiles | xargs -I % mv % dotfiles
-WORKDIR /usr/local/src/dotfiles
-RUN rake install
-
 # Install neovim v0.2.0
 RUN apt-get install -y \
       autoconf \
@@ -72,7 +64,6 @@ RUN git reset --hard v0.2.0
 RUN make CMAKE_BUILD_TYPE=Release
 RUN make install
 RUN rm -rf /usr/local/src/neovim
-RUN gem install neovim
 
 # Mirror vim dotfiles to neovim
 COPY init.vim /root/.config/nvim/init.vim
@@ -84,7 +75,13 @@ RUN curl -sSL https://rvm.io/mpapis.asc | gpg --import -
 RUN curl -sSL https://get.rvm.io | bash -s stable --rails
 
 # Misc ruby
-RUN gem install bundler pry pry-byebug pry-rescue
+RUN /root/.rvm/scripts/rvm use default
+RUN gem install bundler pry pry-byebug pry-rescue neovim
+
+# Dotfiles 😎
+COPY dotfiles /root/dotfiles
+WORKDIR /root/dotfiles
+RUN rake install
 
 WORKDIR /root
 CMD tmux
