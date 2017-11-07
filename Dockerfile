@@ -76,7 +76,8 @@ RUN curl -sSL https://rvm.io/mpapis.asc | gpg --import -
 RUN curl -sSL https://get.rvm.io | bash -s stable --rails
 
 # Misc ruby
-RUN /root/.rvm/scripts/rvm use default
+RUN source /root/.rvm/scripts/rvm
+RUN rvm use default
 RUN gem install bundler pry pry-byebug pry-rescue neovim
 
 # Dotfiles 😎
