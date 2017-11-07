@@ -89,5 +89,8 @@ WORKDIR /usr/local/src
 RUN curl -fsSL get.docker.com -o get-docker.sh && sh get-docker.sh
 RUN rm /usr/local/src/get-docker.sh
 
+# Configure git
+RUN echo "[user]\n\tname = ali\n\temail = me@aliho.ng" >> /root/.gitconfig
+
 WORKDIR /root
 CMD tmux
