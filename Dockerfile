@@ -66,9 +66,6 @@ RUN make CMAKE_BUILD_TYPE=Release
 RUN make install
 RUN rm -rf /usr/local/src/neovim
 
-# Mirror vim dotfiles to neovim
-COPY init.vim /root/.config/nvim/init.vim
-
 # Install rvm
 RUN echo 'export rvm_prefix="$HOME"' > /root/.rvmrc
 RUN echo 'export rvm_path="$HOME/.rvm"' >> /root/.rvmrc
@@ -76,9 +73,7 @@ RUN curl -sSL https://rvm.io/mpapis.asc | gpg --import -
 RUN curl -sSL https://get.rvm.io | bash -s stable --rails
 
 # Misc ruby
-RUN source /root/.rvm/scripts/rvm
-RUN rvm use default
-RUN gem install bundler pry pry-byebug pry-rescue neovim
+RUN /bin/bash -c "source /root/.rvm/scripts/rvm && gem install bundler pry pry-byebug pry-rescue neovim"
 
 # Dotfiles 😎
 COPY dotfiles /root/dotfiles
