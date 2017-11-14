@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y \
       tzdata \
       wget \
       vim \
-      zsh 
+      zsh
 
 RUN chsh -s /usr/bin/zsh
 
@@ -39,7 +39,7 @@ RUN wget https://github.com/tmux/tmux/releases/download/2.5/tmux-2.5.tar.gz
 RUN tar xzvf tmux-2.5.tar.gz
 WORKDIR /usr/local/src/tmux-2.5
 RUN ./configure
-RUN make 
+RUN make
 RUN make install
 RUN rm -rf /usr/local/src/tmux*
 
@@ -55,7 +55,7 @@ RUN apt-get install -y \
       python3 \
       python3-pip \
       unzip
-RUN pip3 install --upgrade pip &&\ 
+RUN pip3 install --upgrade pip &&\
     pip3 install --user neovim jedi mistune psutil setproctitle
 WORKDIR /usr/local/src
 RUN git clone --depth 1 https://github.com/neovim/neovim.git
@@ -86,7 +86,7 @@ RUN curl -fsSL get.docker.com -o get-docker.sh && sh get-docker.sh
 RUN rm /usr/local/src/get-docker.sh
 
 # Configure git
-RUN echo "[user]\n\tname = ali\n\temail = me@aliho.ng" >> /root/.gitconfig
+RUN echo "[user]\n  name = hongtron\n  email = me@aliho.ng" >> /root/.gitconfig
 
 WORKDIR /root
 CMD tmux
