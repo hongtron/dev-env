@@ -75,11 +75,6 @@ RUN curl -sSL https://get.rvm.io | bash -s stable --rails
 # Misc ruby
 RUN /bin/bash -c "source /root/.rvm/scripts/rvm && gem install bundler pry pry-byebug pry-rescue neovim"
 
-# Dotfiles 😎
-COPY dotfiles /root/dotfiles
-WORKDIR /root/dotfiles
-RUN rake install
-
 # Install docker
 WORKDIR /usr/local/src
 RUN curl -fsSL get.docker.com -o get-docker.sh && sh get-docker.sh
@@ -87,6 +82,11 @@ RUN rm /usr/local/src/get-docker.sh
 
 # Configure git
 RUN echo "[user]\n  name = hongtron\n  email = me@aliho.ng" >> /root/.gitconfig
+
+# Dotfiles 😎
+COPY dotfiles /root/dotfiles
+WORKDIR /root/dotfiles
+RUN rake install
 
 WORKDIR /root
 CMD tmux
