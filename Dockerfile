@@ -99,4 +99,4 @@ WORKDIR /root/dotfiles
 RUN rake install
 
 WORKDIR /root
-CMD tmux
+CMD /bin/bash -i -c "tmux-start ali"
