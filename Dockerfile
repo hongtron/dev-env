@@ -80,6 +80,13 @@ WORKDIR /usr/local/src
 RUN curl -fsSL get.docker.com -o get-docker.sh && sh get-docker.sh
 RUN rm /usr/local/src/get-docker.sh
 
+# Install elixir
+WORKDIR /usr/local/src
+RUN wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && dpkg -i erlang-solutions_1.0_all.deb && apt-get update
+RUN apt-get install -y esl-erlang
+RUN apt-get install -y elixir
+RUN rm erlang-solutions_1.0_all.deb
+
 # Install docker-compose
 RUN curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
 
