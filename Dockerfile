@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -y \
       rubygems \
       ruby-dev \
       tmux \
+      openjdk-8-jre \
       tzdata \
       wget \
       vim \
@@ -43,7 +44,7 @@ RUN make
 RUN make install
 RUN rm -rf /usr/local/src/tmux*
 
-# Install neovim v0.2.0
+# Install neovim v0.2.2
 RUN apt-get install -y \
       autoconf \
       automake \
@@ -60,8 +61,8 @@ RUN pip3 install --upgrade pip &&\
 WORKDIR /usr/local/src
 RUN git clone --depth 1 https://github.com/neovim/neovim.git
 WORKDIR /usr/local/src/neovim
-RUN git fetch --depth 1 origin tag v0.2.0
-RUN git reset --hard v0.2.0
+RUN git fetch --depth 1 origin tag v0.2.2
+RUN git reset --hard v0.2.2
 RUN make CMAKE_BUILD_TYPE=Release
 RUN make install
 RUN rm -rf /usr/local/src/neovim
