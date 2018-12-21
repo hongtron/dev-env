@@ -2,6 +2,7 @@ FROM debian:stretch
 
 # Locales
 ENV LANG=en_US.UTF-8
+
 RUN apt-get update && apt-get install -y locales
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 RUN locale-gen en_US.UTF-8
@@ -30,48 +31,27 @@ RUN apt-get update && apt-get install -y \
       tzdata \
       wget \
       vim \
-      zsh
-
-RUN chsh -s /usr/bin/zsh
-
-# Install tmux
-WORKDIR /usr/local/src
-RUN wget https://github.com/tmux/tmux/releases/download/2.5/tmux-2.5.tar.gz
-RUN tar xzvf tmux-2.5.tar.gz
-WORKDIR /usr/local/src/tmux-2.5
-RUN ./configure
-RUN make
-RUN make install
-RUN rm -rf /usr/local/src/tmux*
-
-# Install neovim v0.2.2
-RUN apt-get install -y \
+      zsh \
       autoconf \
       automake \
       cmake \
       g++ \
-      libtool \
-      libtool-bin \
-      pkg-config \
-      python3 \
-      python3-pip \
       unzip
-RUN pip3 install --upgrade pip &&\
-    pip3 install --user neovim jedi mistune psutil setproctitle
-WORKDIR /usr/local/src
-RUN git clone --depth 1 https://github.com/neovim/neovim.git
-WORKDIR /usr/local/src/neovim
-RUN git fetch --depth 1 origin tag v0.2.2
-RUN git reset --hard v0.2.2
-RUN make CMAKE_BUILD_TYPE=Release
-RUN make install
-RUN rm -rf /usr/local/src/neovim
+
+# debian backports
+RUN echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/sources.list
+RUN apt-get update && apt-get -t stretch-backports install -y \
+      tmux \
+      neovim \
+      gnupg2
+
+RUN chsh -s /usr/bin/zsh
 
 # Install rvm
 RUN echo 'export rvm_prefix="$HOME"' > /root/.rvmrc
 RUN echo 'export rvm_path="$HOME/.rvm"' >> /root/.rvmrc
-RUN curl -sSL https://rvm.io/mpapis.asc | gpg --import -
-RUN curl -sSL https://get.rvm.io | bash -s stable --rails
+RUN gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+RUN curl -sSL https://get.rvm.io | bash -s stable --ruby
 
 # Misc ruby
 RUN /bin/bash -c "source /root/.rvm/scripts/rvm && gem install bundler pry pry-byebug pry-rescue neovim"
@@ -91,13 +71,10 @@ RUN rm erlang-solutions_1.0_all.deb
 # Install docker-compose
 RUN curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
 
-# Configure git
-RUN echo "[user]\n  name = hongtron\n  email = me@aliho.ng" >> /root/.gitconfig
-
 # Dotfiles 😎
 COPY dotfiles /root/dotfiles
 WORKDIR /root/dotfiles
 RUN rake install
 
 WORKDIR /root
-CMD /bin/bash -i -c "tmux-start ali"
+CMD /bin/bash -i -c "tmux-start dev"
