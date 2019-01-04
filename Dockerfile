@@ -36,14 +36,31 @@ RUN apt-get update && apt-get install -y \
       automake \
       cmake \
       g++ \
-      unzip
+      unzip \
+      python3 \
+      python3-pip
 
 # debian backports
 RUN echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/sources.list
 RUN apt-get update && apt-get -t stretch-backports install -y \
       tmux \
-      neovim \
       gnupg2
+
+# install neovim
+RUN apt-get install -y \
+      libtool \
+      libtool-bin \
+      pkg-config \
+      gettext
+RUN pip3 install --user neovim jedi mistune psutil setproctitle
+WORKDIR /usr/local/src
+RUN git clone --depth 1 https://github.com/neovim/neovim.git
+WORKDIR /usr/local/src/neovim
+RUN git fetch --depth 1 origin tag v0.3.2
+RUN git reset --hard v0.3.2
+RUN make CMAKE_BUILD_TYPE=Release
+RUN make install
+RUN rm -rf /usr/local/src/neovim
 
 RUN chsh -s /usr/bin/zsh
 
