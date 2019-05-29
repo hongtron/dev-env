@@ -55,8 +55,8 @@ RUN pip3 install --user neovim jedi mistune psutil setproctitle
 WORKDIR /usr/local/src
 RUN git clone --depth 1 https://github.com/neovim/neovim.git
 WORKDIR /usr/local/src/neovim
-RUN git fetch --depth 1 origin tag v0.3.2
-RUN git reset --hard v0.3.2
+RUN git fetch --depth 1 origin tag v0.3.7
+RUN git reset --hard v0.3.7
 RUN make CMAKE_BUILD_TYPE=Release
 RUN make install
 RUN rm -rf /usr/local/src/neovim
