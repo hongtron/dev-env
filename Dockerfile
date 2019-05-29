@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y \
       rubygems \
       ruby-dev \
       tmux \
-      openjdk-8-jre \
+      openjdk-11-jre \
       tzdata \
       wget \
       vim \
