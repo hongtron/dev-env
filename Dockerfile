@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:buster
 
 # Locales
 ENV LANG=en_US.UTF-8
@@ -24,10 +24,11 @@ RUN apt-get update && apt-get install -y \
       libevent-dev \
       net-tools \
       netcat-openbsd \
+      python3 \
       rubygems \
       ruby-dev \
       tmux \
-      openjdk-8-jre \
+      openjdk-11-jre \
       tzdata \
       wget \
       vim \
@@ -38,12 +39,10 @@ RUN apt-get update && apt-get install -y \
       g++ \
       unzip \
       python3 \
-      python3-pip
-
-# debian backports
-RUN echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/sources.list
-RUN apt-get update && apt-get -t stretch-backports install -y \
-      tmux \
+      python3-pip \
+      elixir \
+      docker \
+      docker-compose \
       gnupg2
 
 # install neovim
@@ -56,8 +55,10 @@ RUN pip3 install --user neovim jedi mistune psutil setproctitle
 WORKDIR /usr/local/src
 RUN git clone --depth 1 https://github.com/neovim/neovim.git
 WORKDIR /usr/local/src/neovim
-RUN git fetch --depth 1 origin tag v0.3.4
-RUN git reset --hard v0.3.4
+
+RUN git fetch --depth 1 origin tag v0.3.7
+RUN git reset --hard v0.3.7
+
 RUN make CMAKE_BUILD_TYPE=Release
 RUN make install
 RUN rm -rf /usr/local/src/neovim
@@ -72,21 +73,6 @@ RUN curl -sSL https://get.rvm.io | bash -s stable --ruby
 
 # Misc ruby
 RUN /bin/bash -c "source /root/.rvm/scripts/rvm && gem install bundler pry pry-byebug pry-rescue neovim"
-
-# Install docker
-WORKDIR /usr/local/src
-RUN curl -fsSL get.docker.com -o get-docker.sh && sh get-docker.sh
-RUN rm /usr/local/src/get-docker.sh
-
-# Install elixir
-WORKDIR /usr/local/src
-RUN wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && dpkg -i erlang-solutions_1.0_all.deb && apt-get update
-RUN apt-get install -y esl-erlang
-RUN apt-get install -y elixir
-RUN rm erlang-solutions_1.0_all.deb
-
-# Install docker-compose
-RUN curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
 
 # Dotfiles 😎
 COPY dotfiles /root/dotfiles
