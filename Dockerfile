@@ -43,7 +43,8 @@ RUN apt-get update && apt-get install -y \
       elixir \
       docker \
       docker-compose \
-      gnupg2
+      gnupg2 \
+      unar
 
 # install neovim
 RUN apt-get install -y \
