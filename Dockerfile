@@ -65,6 +65,8 @@ RUN rm -rf /usr/local/src/neovim
 
 RUN chsh -s /usr/bin/zsh
 
+WORKDIR /root
+
 # Install rvm
 RUN echo 'export rvm_prefix="$HOME"' > /root/.rvmrc
 RUN echo 'export rvm_path="$HOME/.rvm"' >> /root/.rvmrc
@@ -73,6 +75,11 @@ RUN curl -sSL https://get.rvm.io | bash -s stable --ruby
 
 # Misc ruby
 RUN /bin/bash -c "source /root/.rvm/scripts/rvm && gem install bundler pry pry-byebug pry-rescue neovim"
+
+# Install rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+# RUN chmod -R a+w /root/.cargo/bin/rustup /root/.cargo/bin/cargo
+RUN /bin/bash -c "source /root/.cargo/env && cargo install xsv"
 
 # Dotfiles 😎
 COPY dotfiles /root/dotfiles
