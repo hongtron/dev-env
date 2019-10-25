@@ -16,6 +16,7 @@ ENV TERM=xterm-256color-italic
 RUN apt-get update && apt-get install -y \
       build-essential \
       curl \
+      man \
       git  \
       htop \
       iputils-ping \
@@ -44,7 +45,8 @@ RUN apt-get update && apt-get install -y \
       docker \
       docker-compose \
       gnupg2 \
-      unar
+      unar \
+      p7zip-full
 
 # install neovim
 RUN apt-get install -y \
