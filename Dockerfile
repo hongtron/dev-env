@@ -46,7 +46,7 @@ WORKDIR /root
 
 # install neovim
 WORKDIR /root/.local/bin
-RUN curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
+RUN curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
 RUN chmod u+x nvim.appimage
 
 # Install some ruby tooling to facilitate setup
