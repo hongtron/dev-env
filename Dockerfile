@@ -25,11 +25,6 @@ RUN apt-get update && apt-get install -y \
       libevent-dev \
       net-tools \
       netcat-openbsd \
-      python3 \
-      rubygems \
-      ruby-dev \
-      tmux \
-      openjdk-11-jdk \
       tzdata \
       wget \
       vim \
@@ -39,55 +34,65 @@ RUN apt-get update && apt-get install -y \
       cmake \
       g++ \
       unzip \
-      python3 \
-      python3-pip \
-      elixir \
       docker \
       docker-compose \
       gnupg2 \
       unar \
       p7zip-full
 
-# install neovim
-RUN apt-get install -y \
-      libtool \
-      libtool-bin \
-      pkg-config \
-      gettext
-RUN pip3 install --user neovim jedi mistune psutil setproctitle
-WORKDIR /usr/local/src
-RUN git clone --depth 1 https://github.com/neovim/neovim.git
-WORKDIR /usr/local/src/neovim
-
-RUN git fetch --depth 1 origin tag v0.3.7
-RUN git reset --hard v0.3.7
-
-RUN make CMAKE_BUILD_TYPE=Release
-RUN make install
-RUN rm -rf /usr/local/src/neovim
-
-RUN chsh -s /usr/bin/zsh
+SHELL ["/bin/bash", "-c"]
 
 WORKDIR /root
 
-# Install rvm
-RUN echo 'export rvm_prefix="$HOME"' > /root/.rvmrc
-RUN echo 'export rvm_path="$HOME/.rvm"' >> /root/.rvmrc
-RUN gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
-RUN curl -sSL https://get.rvm.io | bash -s stable --ruby
+# install neovim
+WORKDIR /root/.local/bin
+RUN curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
+RUN chmod u+x nvim.appimage
 
-# Misc ruby
-RUN /bin/bash -c "source /root/.rvm/scripts/rvm && gem install bundler pry pry-byebug pry-rescue neovim"
-
-# Install rust
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-# RUN chmod -R a+w /root/.cargo/bin/rustup /root/.cargo/bin/cargo
-RUN /bin/bash -c "source /root/.cargo/env && cargo install xsv"
+# Install some ruby tooling to facilitate setup
+RUN apt-get install -y rubygems ruby-dev
 
 # Dotfiles 😎
-COPY dotfiles /root/dotfiles
 WORKDIR /root/dotfiles
-RUN rake install
+RUN gem install rake
+COPY dotfiles /root/dotfiles
+# don't install nvim plugins yet; the rake task shells out, and we need to
+# alias "nvim" to run the AppImage. (The rake task passes the "interactive"
+# flag to bash, so it will pick up the alias.)
+RUN rake scripts:install configs:install docker_env:install
+RUN echo 'alias nvim="/root/.local/bin/nvim.appimage --appimage-extract-and-run"' >> ~/.aliases_shared
+RUN rake plugins:install
 
+# Remove these, since we're going to rely on asdf for actual ruby stuff
+RUN apt-get remove -y rubygems ruby-dev
+
+# asdf
+WORKDIR /root
+COPY tool-versions /root/.tool-versions
+RUN apt-get install -y \
+      libssl-dev \
+      libreadline-dev \
+      zlib1g-dev
+RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.7.5
+RUN echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc
+RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
+RUN echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
+RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
+RUN /root/.asdf/bin/asdf plugin-add tmux
+RUN /root/.asdf/bin/asdf plugin-add ruby
+RUN /root/.asdf/bin/asdf plugin-add python
+RUN /root/.asdf/bin/asdf plugin-add rust
+RUN /root/.asdf/bin/asdf plugin-add java
+RUN /root/.asdf/bin/asdf plugin-add elixir
+RUN /root/.asdf/bin/asdf install
+
+RUN source /root/.asdf/installs/rust/1.38.0/env && rustup default stable
+
+# Add interactive flag so we can use asdf-installed tools
+SHELL ["/bin/bash", "-i", "-c"]
+RUN cargo install xsv
+RUN gem install bundler rake pry pry-byebug pry-rescue neovim
+
+SHELL ["/bin/bash", "-c"]
 WORKDIR /root
 CMD /bin/bash -i -c "tmux-start dev"
