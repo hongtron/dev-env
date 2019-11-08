@@ -61,7 +61,7 @@ COPY dotfiles /root/dotfiles
 # alias "nvim" to run the AppImage. (The rake task passes the "interactive"
 # flag to bash, so it will pick up the alias.)
 RUN rake scripts:install configs:install docker_env:install
-RUN echo 'alias nvim="/root/.local/bin/nvim.appimage --appimage-extract-and-run"' >> ~/.aliases_shared
+RUN printf "nvim() {\n  /root/.local/bin/nvim.appimage --appimage-extract-and-run \"\$@\"\n}\n" >> ~/.aliases_shared
 RUN rake plugins:install
 
 # Remove these, since we're going to rely on asdf for actual ruby stuff
