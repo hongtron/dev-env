@@ -14,31 +14,32 @@ ENV TERM=xterm-256color-italic
 
 # Common packages
 RUN apt-get update && apt-get install -y \
+      autoconf \
+      automake \
       build-essential \
+      cmake \
       curl \
-      man \
+      docker \
+      docker-compose \
+      g++ \
       git  \
+      gnupg2 \
       htop \
       iputils-ping \
       jq \
-      libncurses5-dev \
       libevent-dev \
+      libncurses5-dev \
+      man \
       net-tools \
       netcat-openbsd \
+      p7zip-full \
+      tmux \
       tzdata \
-      wget \
-      vim \
-      zsh \
-      autoconf \
-      automake \
-      cmake \
-      g++ \
-      unzip \
-      docker \
-      docker-compose \
-      gnupg2 \
       unar \
-      p7zip-full
+      unzip \
+      vim \
+      wget \
+      zsh
 
 SHELL ["/bin/bash", "-c"]
 
