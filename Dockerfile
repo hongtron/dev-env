@@ -89,8 +89,7 @@ RUN /root/.asdf/bin/asdf install
 
 RUN source /root/.asdf/installs/rust/1.38.0/env && rustup default stable
 
-# Add interactive flag so we can use asdf-installed tools
-SHELL ["/bin/bash", "-i", "-c"]
+SHELL ["/bin/bash", "-c", "PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH"]
 RUN cargo install xsv
 RUN gem install bundler rake pry pry-byebug pry-rescue neovim
 
