@@ -88,12 +88,9 @@ RUN /root/.asdf/bin/asdf plugin-add java
 RUN /root/.asdf/bin/asdf plugin-add elixir
 RUN /root/.asdf/bin/asdf install
 
-RUN source /root/.asdf/installs/rust/1.38.0/env && rustup default stable
+RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH cargo install xsv
+RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install bundler rake pry pry-byebug pry-rescue neovim
+RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH asdf reshim
 
-SHELL ["/bin/bash", "-c", "PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH"]
-RUN cargo install xsv
-RUN gem install bundler rake pry pry-byebug pry-rescue neovim
-
-SHELL ["/bin/bash", "-c"]
 WORKDIR /root
 CMD /bin/bash -i -c "tmux-start dev"
