@@ -46,9 +46,10 @@ SHELL ["/bin/bash", "-c"]
 WORKDIR /root
 
 # install neovim
-WORKDIR /root/.local/bin
+WORKDIR /root/.local/bin/nvim
 RUN curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
 RUN chmod u+x nvim.appimage
+RUN ./nvim.appimage --appimage-extract
 
 # Install some ruby tooling to facilitate setup
 RUN apt-get install -y rubygems ruby-dev
@@ -60,7 +61,7 @@ COPY dotfiles /root/dotfiles
 # don't install nvim plugins yet; the rake task shells out, and we need to
 # define a "nvim" function to run the AppImage.
 RUN rake scripts:install configs:install docker_env:install
-RUN printf "nvim() {\n  /root/.local/bin/nvim.appimage --appimage-extract-and-run \"\$@\"\n}\n" >> ~/.aliases_shared
+RUN printf "nvim() {\n  /root/.local/bin/nvim/squashfs-root/AppRun \"\$@\"\n}\n" >> ~/.aliases_shared
 # source the function we just defined
 RUN sed -i 's/bash -c/BASH_ENV=~\/.aliases_shared bash -c/g' /root/dotfiles/Rakefile
 RUN rake plugins:install
