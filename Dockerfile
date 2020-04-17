@@ -76,7 +76,7 @@ RUN apt-get install -y \
       libssl-dev \
       libreadline-dev \
       zlib1g-dev
-RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.7.5
+RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.7.8
 RUN echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc
 RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
 RUN echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
