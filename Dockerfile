@@ -29,6 +29,7 @@ RUN apt-get update && apt-get install -y \
       jq \
       libevent-dev \
       libncurses5-dev \
+      libffi-dev \
       man \
       net-tools \
       netcat-openbsd \
