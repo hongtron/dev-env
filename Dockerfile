@@ -92,5 +92,8 @@ RUN printf "nvim() {\n  /root/.local/bin/nvim/squashfs-root/AppRun \"\$@\"\n}\n"
 RUN sed -i 's/bash -c/BASH_ENV=~\/.aliases_shared bash -c/g' /root/dotfiles/Rakefile
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH rake plugins:install
 
+RUN echo . $HOME/.asdf/asdf.sh >> ~/.aliases_shared
+RUN /bin/zsh -c 'printf "fpath=(${HOME}/.asdf/completions ${fpath})\nautoload -Uz compinit\ncompinit" >> ~/.zshrc'
+
 WORKDIR /root
 CMD /bin/bash -i -c "tmux-start dev"
