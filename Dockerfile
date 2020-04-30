@@ -52,24 +52,6 @@ RUN curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim.appi
 RUN chmod u+x nvim.appimage
 RUN ./nvim.appimage --appimage-extract
 
-# Install some ruby tooling to facilitate setup
-RUN apt-get install -y rubygems ruby-dev
-
-# Dotfiles 😎
-WORKDIR /root/dotfiles
-RUN gem install rake
-COPY dotfiles /root/dotfiles
-# don't install nvim plugins yet; the rake task shells out, and we need to
-# define a "nvim" function to run the AppImage.
-RUN rake scripts:install configs:install docker_env:install
-RUN printf "nvim() {\n  /root/.local/bin/nvim/squashfs-root/AppRun \"\$@\"\n}\n" >> ~/.aliases_shared
-# source the function we just defined
-RUN sed -i 's/bash -c/BASH_ENV=~\/.aliases_shared bash -c/g' /root/dotfiles/Rakefile
-RUN rake plugins:install
-
-# Remove these, since we're going to rely on asdf for actual ruby stuff
-RUN apt-get remove -y rubygems ruby-dev
-
 # asdf
 WORKDIR /root
 COPY tool-versions /root/.tool-versions
@@ -97,6 +79,18 @@ RUN PATH=/root/.asdf/bin:$PATH asdf install
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install bundler rake pry pry-byebug pry-rescue neovim
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH pip3 install pynvim
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH asdf reshim
+
+# Dotfiles 😎
+WORKDIR /root/dotfiles
+RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install rake
+COPY dotfiles /root/dotfiles
+# don't install nvim plugins yet; the rake task shells out, and we need to
+# define a "nvim" function to run the AppImage.
+RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH rake scripts:install configs:install docker_env:install
+RUN printf "nvim() {\n  /root/.local/bin/nvim/squashfs-root/AppRun \"\$@\"\n}\n" >> ~/.aliases_shared
+# source the function we just defined
+RUN sed -i 's/bash -c/BASH_ENV=~\/.aliases_shared bash -c/g' /root/dotfiles/Rakefile
+RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH rake plugins:install
 
 WORKDIR /root
 CMD /bin/bash -i -c "tmux-start dev"
