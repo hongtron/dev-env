@@ -93,7 +93,6 @@ RUN /root/.asdf/bin/asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodej
 RUN /bin/bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring # ew, why
 
 RUN PATH=/root/.asdf/bin:$PATH asdf install
-RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH cargo install xsv
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install bundler rake pry pry-byebug pry-rescue neovim
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH pip3 install pynvim
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH asdf reshim
