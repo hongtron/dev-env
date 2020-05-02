@@ -71,9 +71,10 @@ RUN /root/.asdf/bin/asdf plugin-add rust
 RUN /root/.asdf/bin/asdf plugin-add java
 RUN /root/.asdf/bin/asdf plugin-add elixir
 
-# need node for vim-coc
+# need node and yarn for vim-coc
 RUN /root/.asdf/bin/asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 RUN /bin/bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring # ew, why
+RUN /root/.asdf/bin/asdf plugin-add yarn
 
 RUN PATH=/root/.asdf/bin:$PATH asdf install
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install bundler rake pry pry-byebug pry-rescue neovim
