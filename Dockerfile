@@ -16,8 +16,10 @@ ENV TERM=xterm-256color-italic
 RUN apt-get update && apt-get install -y \
       autoconf \
       automake \
+      pkg-config \
       build-essential \
       cmake \
+      byacc \
       curl \
       docker \
       docker-compose \
@@ -34,7 +36,6 @@ RUN apt-get update && apt-get install -y \
       net-tools \
       netcat-openbsd \
       p7zip-full \
-      tmux \
       tzdata \
       unar \
       unzip \
@@ -70,13 +71,12 @@ RUN /root/.asdf/bin/asdf plugin-add python
 RUN /root/.asdf/bin/asdf plugin-add rust
 RUN /root/.asdf/bin/asdf plugin-add java
 RUN /root/.asdf/bin/asdf plugin-add elixir
-
 # need node and yarn for vim-coc
 RUN /root/.asdf/bin/asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 RUN /bin/bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring # ew, why
 RUN /root/.asdf/bin/asdf plugin-add yarn
-
 RUN PATH=/root/.asdf/bin:$PATH asdf install
+
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install bundler rake pry pry-byebug pry-rescue neovim
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH pip3 install pynvim
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH asdf reshim
