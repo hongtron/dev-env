@@ -34,7 +34,7 @@ tmux = [
   "byacc",
   "pkg-config",
 ]
-pynvim = [
+python = [
   "libffi-dev",
 ]
 

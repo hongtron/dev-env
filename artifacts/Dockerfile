@@ -1,3 +1,5 @@
+# vi: ft=Dockerfile
+
 FROM debian:buster
 
 # Locales
@@ -13,36 +15,32 @@ RUN tic /root/xterm-256color-italic.terminfo
 ENV TERM=xterm-256color-italic
 
 # Common packages
-RUN apt-get update && apt-get install -y \
-      autoconf \
-      automake \
-      pkg-config \
-      build-essential \
-      cmake \
-      byacc \
-      curl \
-      docker \
-      docker-compose \
-      g++ \
-      git  \
-      gnupg2 \
-      htop \
-      iputils-ping \
-      jq \
-      libevent-dev \
-      libncurses5-dev \
-      libffi-dev \
-      man \
-      net-tools \
-      netcat-openbsd \
-      p7zip-full \
-      tzdata \
-      unar \
-      unzip \
-      vim \
-      wget \
-      zsh
+RUN apt-get update
 
+RUN apt-get install -y autoconf
+RUN apt-get install -y automake
+RUN apt-get install -y build-essential
+RUN apt-get install -y cmake
+RUN apt-get install -y curl
+RUN apt-get install -y docker
+RUN apt-get install -y docker-compose
+RUN apt-get install -y git
+RUN apt-get install -y gnupg2
+RUN apt-get install -y htop
+RUN apt-get install -y iputils-ping
+RUN apt-get install -y jq
+RUN apt-get install -y libevent-dev
+RUN apt-get install -y libncurses5-dev
+RUN apt-get install -y man
+RUN apt-get install -y net-tools
+RUN apt-get install -y netcat-openbsd
+RUN apt-get install -y p7zip-full
+RUN apt-get install -y tzdata
+RUN apt-get install -y unar
+RUN apt-get install -y unzip
+RUN apt-get install -y vim
+RUN apt-get install -y wget
+RUN apt-get install -y zsh
 SHELL ["/bin/bash", "-c"]
 
 WORKDIR /root
@@ -56,34 +54,62 @@ RUN ./nvim.appimage --appimage-extract
 # asdf
 WORKDIR /root
 COPY tool-versions /root/.tool-versions
-RUN apt-get install -y \
-      libssl-dev \
-      libreadline-dev \
-      zlib1g-dev
+
+RUN apt-get install -y libreadline-dev
+RUN apt-get install -y libssl-dev
+RUN apt-get install -y zlib1g-dev
 RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.7.8
 RUN echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc
 RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
 RUN echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
 RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
+
+
 RUN /root/.asdf/bin/asdf plugin-add tmux
 RUN /root/.asdf/bin/asdf plugin-add ruby
 RUN /root/.asdf/bin/asdf plugin-add python
 RUN /root/.asdf/bin/asdf plugin-add rust
 RUN /root/.asdf/bin/asdf plugin-add java
-RUN /root/.asdf/bin/asdf plugin-add elixir
-# need node and yarn for vim-coc
-RUN /root/.asdf/bin/asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-RUN /bin/bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring # ew, why
+RUN /root/.asdf/bin/asdf plugin-add nodejs
 RUN /root/.asdf/bin/asdf plugin-add yarn
-RUN PATH=/root/.asdf/bin:$PATH asdf install
+RUN /bin/bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring # ew, why
 
-RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install bundler rake pry pry-byebug pry-rescue neovim
+# todo: restructure toml such that dependencies are more sensibly organized
+
+
+RUN apt-get install -y byacc
+RUN apt-get install -y pkg-config
+
+RUN apt-get install -y libffi-dev
+
+
+RUN PATH=/root/.asdf/bin:$PATH asdf install tmux 3.1a
+
+RUN PATH=/root/.asdf/bin:$PATH asdf install ruby 2.7.1
+
+RUN PATH=/root/.asdf/bin:$PATH asdf install python 3.8.2
+RUN PATH=/root/.asdf/bin:$PATH asdf install python 2.7.16
+
+RUN PATH=/root/.asdf/bin:$PATH asdf install rust 1.43.0
+
+RUN PATH=/root/.asdf/bin:$PATH asdf install java adopt-openjdk-13.0.2+8
+
+RUN PATH=/root/.asdf/bin:$PATH asdf install nodejs 14.1.0
+
+RUN PATH=/root/.asdf/bin:$PATH asdf install yarn 1.22.4
+
+RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install bundler
+RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install rake
+RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install pry
+RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install pry-byebug
+RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install pry-rescue
+RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install neovim
+
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH pip3 install pynvim
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH asdf reshim
 
 # Dotfiles 😎
 WORKDIR /root/dotfiles
-RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install rake
 COPY dotfiles /root/dotfiles
 # don't install nvim plugins yet; the rake task shells out, and we need to
 # define a "nvim" function to run the AppImage.
