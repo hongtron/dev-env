@@ -1,3 +1,5 @@
+# vi: ft=Dockerfile
+
 FROM debian:buster
 
 # Locales
@@ -31,10 +33,9 @@ RUN ./nvim.appimage --appimage-extract
 # asdf
 WORKDIR /root
 COPY tool-versions /root/.tool-versions
-RUN apt-get install -y \
-      libssl-dev \
-      libreadline-dev \
-      zlib1g-dev
+<% @config["apt"]["asdf"].each do |package| %>
+apt-get install -y <%= package -%>
+<% end %>
 RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.7.8
 RUN echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc
 RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
@@ -45,20 +46,25 @@ RUN /root/.asdf/bin/asdf plugin-add ruby
 RUN /root/.asdf/bin/asdf plugin-add python
 RUN /root/.asdf/bin/asdf plugin-add rust
 RUN /root/.asdf/bin/asdf plugin-add java
-RUN /root/.asdf/bin/asdf plugin-add elixir
 # need node and yarn for vim-coc
 RUN /root/.asdf/bin/asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 RUN /bin/bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring # ew, why
 RUN /root/.asdf/bin/asdf plugin-add yarn
 RUN PATH=/root/.asdf/bin:$PATH asdf install
 
-RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install bundler rake pry pry-byebug pry-rescue neovim
+<% @config["ruby"]["gems"].each do |gem| %>
+RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install <%= gem -%>
+<% end %>
+
+<% @config["apt"]["pynvim"].each do |package| %>
+apt-get install -y <%= package -%>
+<% end %>
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH pip3 install pynvim
+
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH asdf reshim
 
 # Dotfiles 😎
 WORKDIR /root/dotfiles
-RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install rake
 COPY dotfiles /root/dotfiles
 # don't install nvim plugins yet; the rake task shells out, and we need to
 # define a "nvim" function to run the AppImage.

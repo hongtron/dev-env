@@ -47,3 +47,13 @@ rust = ["1.43.0"]
 java = ["adopt-openjdk-13.0.2+8"]
 nodejs = ["14.1.0"]
 yarn = ["1.22.4"]
+
+[ruby]
+gems = [
+  "bundler",
+  "rake",
+  "pry",
+  "pry-byebug",
+  "pry-rescue",
+  "neovim",
+]
