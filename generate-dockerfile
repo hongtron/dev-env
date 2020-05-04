@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+# vi: ft=ruby
+
+require "erb"
+require "toml"
+require "pry-byebug"
+
+CONFIG_FILE = File.join(__dir__, "Config.toml")
+
+class Dockerfile
+  attr_accessor :config
+  def initialize
+    @config = TOML.load_file(CONFIG_FILE)
+  end
+end
+
+Dockerfile.new
