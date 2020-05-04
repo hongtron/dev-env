@@ -1,3 +1,3 @@
 [submodule "dotfiles"]
-	path = dotfiles
+	path = artifacts/dotfiles
 	url = git://github.com/hongtron/dotfiles.git
