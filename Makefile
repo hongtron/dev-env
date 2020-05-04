@@ -1,7 +1,8 @@
 .PHONY: build
 
 build:
-	docker build -t hongtron/dev-env .
+	./generate-dockerfile > ./target/Dockerfile
+	docker build -t hongtron/dev-env ./target/
 
 push:
 	docker push hongtron/dev-env:latest

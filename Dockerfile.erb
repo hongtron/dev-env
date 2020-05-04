@@ -41,16 +41,16 @@ RUN echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc
 RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
 RUN echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
 RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
-RUN /root/.asdf/bin/asdf plugin-add tmux
-RUN /root/.asdf/bin/asdf plugin-add ruby
-RUN /root/.asdf/bin/asdf plugin-add python
-RUN /root/.asdf/bin/asdf plugin-add rust
-RUN /root/.asdf/bin/asdf plugin-add java
-# need node and yarn for vim-coc
-RUN /root/.asdf/bin/asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+
+<% @config["tool_versions"].keys.each do |tool| %>
+RUN /root/.asdf/bin/asdf plugin-add <%= tool -%>
+<% end %>
+
 RUN /bin/bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring # ew, why
-RUN /root/.asdf/bin/asdf plugin-add yarn
-RUN PATH=/root/.asdf/bin:$PATH asdf install
+
+<% @config["tool_versions"].each do |tool, version| %>
+RUN PATH=/root/.asdf/bin:$PATH asdf install <%= tool -%> <%= version -%>
+<% end %>
 
 <% @config["ruby"]["gems"].each do |gem| %>
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install <%= gem -%>
@@ -59,7 +59,10 @@ RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install <%= gem -%>
 <% @config["apt"]["pynvim"].each do |package| %>
 apt-get install -y <%= package -%>
 <% end %>
-RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH pip3 install pynvim
+
+<% @config["python"]["packages"].each do |package| %>
+RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH pip3 install <%= package -%>
+<% end %>
 
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH asdf reshim
 

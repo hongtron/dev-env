@@ -45,8 +45,8 @@ ruby = ["2.7.1"]
 python = ["3.8.2", "2.7.16"]
 rust = ["1.43.0"]
 java = ["adopt-openjdk-13.0.2+8"]
-nodejs = ["14.1.0"]
-yarn = ["1.22.4"]
+nodejs = ["14.1.0"] # needed for vim-coc
+yarn = ["1.22.4"] # needed for vim-coc
 
 [ruby]
 gems = [
@@ -56,4 +56,9 @@ gems = [
   "pry-byebug",
   "pry-rescue",
   "neovim",
+]
+
+[python]
+packages = [
+  "pynvim",
 ]
