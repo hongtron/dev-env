@@ -6,12 +6,18 @@ require "toml"
 require "pry-byebug"
 
 CONFIG_FILE = File.join(__dir__, "Config.toml")
+TEMPLATE_FILE = File.join(__dir__, "Dockerfile.erb")
 
 class Dockerfile
-  attr_accessor :config
+  attr_accessor :config, :template
   def initialize
     @config = TOML.load_file(CONFIG_FILE)
+    @template = ERB.new(File.read(TEMPLATE_FILE), trim_mode: "-")
+  end
+
+  def generate
+    template.result(binding)
   end
 end
 
-Dockerfile.new
+puts Dockerfile.new.generate
