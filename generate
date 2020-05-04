@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+# vi: ft=ruby
+
+require "erb"
+require "toml"
+require "pry-byebug"
+
+CONFIG_FILE = File.join(__dir__, "Config.toml")
+DOCKERFILE_TEMPLATE_FILE = File.join(__dir__, "Dockerfile.erb")
+ARTIFACTS_DIR = File.join(__dir__, "artifacts")
+
+class Generator
+  attr_accessor :config, :dockerfile_template
+  def initialize
+    @config = TOML.load_file(CONFIG_FILE)
+    @dockerfile_template = ERB.new(File.read(DOCKERFILE_TEMPLATE_FILE), trim_mode: "-")
+  end
+
+  def run
+    File.write(
+      File.join(ARTIFACTS_DIR, "Dockerfile"),
+      dockerfile_template.result(binding),
+    )
+
+    File.write(
+      File.join(ARTIFACTS_DIR, "tool-versions"),
+      tool_versions,
+    )
+  end
+
+  def tool_versions
+    config["tool_versions"].map do |tool, versions|
+      (Array(tool) + versions).join(" ")
+    end.join("\n")
+  end
+end
+
+Generator.new.run
