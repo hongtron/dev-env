@@ -40,13 +40,16 @@ RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
 RUN echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
 RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
 
-# todo: make this a pre-install command to run
-RUN /bin/bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring # ew, why
-
 <% tools_for_source("asdf").each do |tool, config| %>
 <% if config["apt_dependencies"] %>
 <% config["apt_dependencies"].each do |package| %>
 RUN apt-get install -y <%= package -%>
+<% end -%>
+<% end -%>
+
+<% if config["pre_install_commands"] -%>
+<% config["pre_install_commands"].each do |cmd| %>
+RUN /bin/bash <%= cmd -%>
 <% end -%>
 <% end -%>
 

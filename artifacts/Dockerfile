@@ -61,34 +61,39 @@ RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
 RUN echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
 RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
 
-# todo: make this a pre-install command to run
-RUN /bin/bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring # ew, why
-
 
 
 
 RUN apt-get install -y byacc
 RUN apt-get install -y pkg-config
+
 RUN /root/.asdf/bin/asdf plugin-add tmux
 RUN PATH=/root/.asdf/bin:$PATH asdf install tmux 3.1a
 
 
 RUN apt-get install -y libffi-dev
+
 RUN /root/.asdf/bin/asdf plugin-add python
 RUN PATH=/root/.asdf/bin:$PATH asdf install python 3.8.2
 RUN PATH=/root/.asdf/bin:$PATH asdf install python 2.7.16
 
+
 RUN /root/.asdf/bin/asdf plugin-add ruby
 RUN PATH=/root/.asdf/bin:$PATH asdf install ruby 2.7.1
+
 
 RUN /root/.asdf/bin/asdf plugin-add rust
 RUN PATH=/root/.asdf/bin:$PATH asdf install rust 1.43.0
 
+
 RUN /root/.asdf/bin/asdf plugin-add java
 RUN PATH=/root/.asdf/bin:$PATH asdf install java adopt-openjdk-13.0.2+8
 
+
+RUN /bin/bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
 RUN /root/.asdf/bin/asdf plugin-add nodejs
 RUN PATH=/root/.asdf/bin:$PATH asdf install nodejs 14.1.0
+
 
 RUN /root/.asdf/bin/asdf plugin-add yarn
 RUN PATH=/root/.asdf/bin:$PATH asdf install yarn 1.22.4

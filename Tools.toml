@@ -123,6 +123,9 @@ asdf.versions = ["adopt-openjdk-13.0.2+8"]
 [nodejs]
 source = "asdf"
 asdf.versions = ["14.1.0"] # needed for vim-coc
+pre_install_commands = [
+  "~/.asdf/plugins/nodejs/bin/import-release-team-keyring",
+]
 
 [yarn]
 source = "asdf"
