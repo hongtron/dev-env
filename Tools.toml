@@ -83,6 +83,17 @@ source = "asdf"
 asdf.versions = ["3.8.2", "2.7.16"]
 apt_dependencies = [
   "libffi-dev",
+  "liblzma-dev",
+  "libncurses5-dev",
+  "libncursesw5-dev",
+  "libreadline-dev",
+  "libsqlite3-dev",
+  "libssl-dev",
+  "llvm",
+  "python-openssl",
+  "tk-dev",
+  "xz-utils",
+  "zlib1g-dev",
 ]
 packages.install_command = "pip3 install"
 packages.install_list = [
