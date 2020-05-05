@@ -1,6 +1,6 @@
 tmux 3.1a
-ruby 2.7.1
 python 3.8.2 2.7.16
+ruby 2.7.1
 rust 1.43.0
 java adopt-openjdk-13.0.2+8
 nodejs 14.1.0

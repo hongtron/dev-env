@@ -16,7 +16,7 @@ ENV TERM=xterm-256color-italic
 
 # Common packages
 RUN apt-get update
-<% @config["apt"]["general"].each do |package| %>
+<% tools_for_source("apt").keys.each do |package| %>
 RUN apt-get install -y <%= package -%>
 <% end -%>
 
@@ -33,9 +33,6 @@ RUN ./nvim.appimage --appimage-extract
 # asdf
 WORKDIR /root
 COPY tool-versions /root/.tool-versions
-<% @config["apt"]["asdf"].each do |package| %>
-RUN apt-get install -y <%= package -%>
-<% end -%>
 
 RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.7.8
 RUN echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc
@@ -43,32 +40,28 @@ RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
 RUN echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
 RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
 
-<% @config["tool_versions"].keys.each do |tool| %>
-RUN /root/.asdf/bin/asdf plugin-add <%= tool -%>
-<% end -%>
-
+# todo: make this a pre-install command to run
 RUN /bin/bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring # ew, why
 
-# todo: restructure toml such that dependencies are more sensibly organized
-<% @config["tool_versions"].keys.filter { |t| @config["apt"].keys.include?(t) }.each do |tool| %>
-<% @config["apt"][tool].each do |package| %>
+<% tools_for_source("asdf").each do |tool, config| %>
+<% if config["apt_dependencies"] %>
+<% config["apt_dependencies"].each do |package| %>
 RUN apt-get install -y <%= package -%>
 <% end -%>
 <% end -%>
 
-<% @config["tool_versions"].each do |tool, versions| %>
-<% versions.each do |version| %>
+RUN /root/.asdf/bin/asdf plugin-add <%= tool -%>
+<% config["asdf"]["versions"].each do |version| %>
 RUN PATH=/root/.asdf/bin:$PATH asdf install <%= tool -%> <%= version -%>
 <% end -%>
 <% end -%>
 
-<% @config["ruby"]["gems"].each do |gem| %>
-RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install <%= gem -%>
+<% package_configs.each do |pc| %>
+<% pc["install_list"].each do |package| %>
+RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH <%= pc["install_command"] -%> <%= package -%>
+<% end -%>
 <% end -%>
 
-<% @config["python"]["packages"].each do |package| %>
-RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH pip3 install <%= package -%>
-<% end -%>
 
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH asdf reshim
 

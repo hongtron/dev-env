@@ -55,48 +55,46 @@ RUN ./nvim.appimage --appimage-extract
 WORKDIR /root
 COPY tool-versions /root/.tool-versions
 
-RUN apt-get install -y libreadline-dev
-RUN apt-get install -y libssl-dev
-RUN apt-get install -y zlib1g-dev
 RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.7.8
 RUN echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc
 RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
 RUN echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
 RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
 
-
-RUN /root/.asdf/bin/asdf plugin-add tmux
-RUN /root/.asdf/bin/asdf plugin-add ruby
-RUN /root/.asdf/bin/asdf plugin-add python
-RUN /root/.asdf/bin/asdf plugin-add rust
-RUN /root/.asdf/bin/asdf plugin-add java
-RUN /root/.asdf/bin/asdf plugin-add nodejs
-RUN /root/.asdf/bin/asdf plugin-add yarn
+# todo: make this a pre-install command to run
 RUN /bin/bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring # ew, why
 
-# todo: restructure toml such that dependencies are more sensibly organized
+
 
 
 RUN apt-get install -y byacc
 RUN apt-get install -y pkg-config
-
-RUN apt-get install -y libffi-dev
-
-
+RUN /root/.asdf/bin/asdf plugin-add tmux
 RUN PATH=/root/.asdf/bin:$PATH asdf install tmux 3.1a
 
-RUN PATH=/root/.asdf/bin:$PATH asdf install ruby 2.7.1
 
+RUN apt-get install -y libffi-dev
+RUN /root/.asdf/bin/asdf plugin-add python
 RUN PATH=/root/.asdf/bin:$PATH asdf install python 3.8.2
 RUN PATH=/root/.asdf/bin:$PATH asdf install python 2.7.16
 
+RUN /root/.asdf/bin/asdf plugin-add ruby
+RUN PATH=/root/.asdf/bin:$PATH asdf install ruby 2.7.1
+
+RUN /root/.asdf/bin/asdf plugin-add rust
 RUN PATH=/root/.asdf/bin:$PATH asdf install rust 1.43.0
 
+RUN /root/.asdf/bin/asdf plugin-add java
 RUN PATH=/root/.asdf/bin:$PATH asdf install java adopt-openjdk-13.0.2+8
 
+RUN /root/.asdf/bin/asdf plugin-add nodejs
 RUN PATH=/root/.asdf/bin:$PATH asdf install nodejs 14.1.0
 
+RUN /root/.asdf/bin/asdf plugin-add yarn
 RUN PATH=/root/.asdf/bin:$PATH asdf install yarn 1.22.4
+
+
+RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH pip3 install pynvim
 
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install bundler
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install rake
@@ -105,7 +103,6 @@ RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install pry-byebug
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install pry-rescue
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH gem install neovim
 
-RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH pip3 install pynvim
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH asdf reshim
 
 # Dotfiles 😎

@@ -1,0 +1,129 @@
+[autoconf]
+source = "apt"
+
+[automake]
+source = "apt"
+
+[build-essential]
+source = "apt"
+
+[cmake]
+source = "apt"
+
+[curl]
+source = "apt"
+
+[docker]
+source = "apt"
+
+[docker-compose]
+source = "apt"
+
+[git]
+source = "apt"
+
+[gnupg2]
+source = "apt"
+
+[htop]
+source = "apt"
+
+[iputils-ping]
+source = "apt"
+
+[jq]
+source = "apt"
+
+[libevent-dev]
+source = "apt"
+
+[libncurses5-dev]
+source = "apt"
+
+[man]
+source = "apt"
+
+[net-tools]
+source = "apt"
+
+[netcat-openbsd]
+source = "apt"
+
+[p7zip-full]
+source = "apt"
+
+[tzdata]
+source = "apt"
+
+[unar]
+source = "apt"
+
+[unzip]
+source = "apt"
+
+[vim]
+source = "apt"
+
+[wget]
+source = "apt"
+
+[zsh]
+source = "apt"
+
+[tmux]
+source = "asdf"
+asdf.versions = ["3.1a"]
+apt_dependencies = [
+  "byacc",
+  "pkg-config",
+]
+
+[python]
+source = "asdf"
+asdf.versions = ["3.8.2", "2.7.16"]
+apt_dependencies = [
+  "libffi-dev",
+]
+packages.install_command = "pip3 install"
+packages.install_list = [
+  "pynvim",
+]
+
+[asdf]
+source = "git"
+git.repo = "https://github.com/asdf-vm/asdf.git"
+git.release = "0.7.8"
+apt_dependencies = [
+  "libreadline-dev",
+  "libssl-dev",
+  "zlib1g-dev",
+]
+
+[ruby]
+source = "asdf"
+asdf.versions = ["2.7.1"]
+packages.install_command = "gem install"
+packages.install_list = [
+  "bundler",
+  "rake",
+  "pry",
+  "pry-byebug",
+  "pry-rescue",
+  "neovim",
+]
+
+[rust]
+source = "asdf"
+asdf.versions = ["1.43.0"]
+
+[java]
+source = "asdf"
+asdf.versions = ["adopt-openjdk-13.0.2+8"]
+
+[nodejs]
+source = "asdf"
+asdf.versions = ["14.1.0"] # needed for vim-coc
+
+[yarn]
+source = "asdf"
+asdf.versions = ["1.22.4"] # needed for vim-coc

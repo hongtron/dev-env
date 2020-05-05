@@ -2,17 +2,17 @@
 # vi: ft=ruby
 
 require "erb"
-require "toml"
+require "toml-rb"
 require "pry-byebug"
 
-CONFIG_FILE = File.join(__dir__, "Config.toml")
+TOOLS_FILE = File.join(__dir__, "Tools.toml")
 DOCKERFILE_TEMPLATE_FILE = File.join(__dir__, "Dockerfile.erb")
 ARTIFACTS_DIR = File.join(__dir__, "artifacts")
 
 class Generator
-  attr_accessor :config, :dockerfile_template
+  attr_accessor :tools, :dockerfile_template
   def initialize
-    @config = TOML.load_file(CONFIG_FILE)
+    @tools = TomlRB.load_file(TOOLS_FILE)
     @dockerfile_template = ERB.new(File.read(DOCKERFILE_TEMPLATE_FILE), trim_mode: "-")
   end
 
@@ -24,14 +24,24 @@ class Generator
 
     File.write(
       File.join(ARTIFACTS_DIR, "tool-versions"),
-      tool_versions,
+      asdf_tool_versions,
     )
   end
 
-  def tool_versions
-    config["tool_versions"].map do |tool, versions|
-      (Array(tool) + versions).join(" ")
+  def asdf_tool_versions
+    tools_for_source("asdf").map do |tool, config|
+      (Array(tool) + config["asdf"]["versions"]).join(" ")
     end.join("\n")
+  end
+
+  def tools_for_source(source)
+    tools.filter { |_, config| config["source"] == source }
+  end
+
+  def package_configs
+    tools
+      .values
+      .filter_map { |config| config["packages"] }
   end
 end
 

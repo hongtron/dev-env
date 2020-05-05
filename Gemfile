@@ -1,4 +1,4 @@
 source 'https://rubygems.org'
 
 gem "pry-byebug"
-gem "toml"
+gem "toml-rb"
