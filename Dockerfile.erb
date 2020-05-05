@@ -47,13 +47,13 @@ RUN apt-get install -y <%= package -%>
 <% end -%>
 <% end -%>
 
+RUN /root/.asdf/bin/asdf plugin-add <%= tool -%>
 <% if config["pre_install_commands"] -%>
 <% config["pre_install_commands"].each do |cmd| %>
 RUN /bin/bash <%= cmd -%>
 <% end -%>
 <% end -%>
 
-RUN /root/.asdf/bin/asdf plugin-add <%= tool -%>
 <% config["asdf"]["versions"].each do |version| %>
 RUN PATH=/root/.asdf/bin:$PATH asdf install <%= tool -%> <%= version -%>
 <% end -%>
