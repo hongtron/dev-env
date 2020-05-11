@@ -1,3 +1,35 @@
+[apt]
+source = false
+
+  [apt.as_source]
+  pre_usage_commands = [
+    "apt-get update",
+  ]
+  usage_command = "apt-get install -y"
+
+[asdf]
+source = "git"
+git.repo = "https://github.com/asdf-vm/asdf.git"
+git.release = "0.7.8"
+dependencies = [
+  "libreadline-dev",
+  "libssl-dev",
+  "zlib1g-dev",
+]
+
+  [asdf.as_source]
+  pre_usage_commands = [
+    "echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc",
+    "echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc"
+  ]
+  usage_command = "asdf install"
+
+[appimage]
+source = "curl"
+
+  [appimage.as_source]
+  usage_command = "curl -LO"
+
 [autoconf]
 source = "apt"
 
@@ -21,6 +53,9 @@ source = "apt"
 
 [git]
 source = "apt"
+
+  [git.as_source]
+  usage_command = "git clone"
 
 [gnupg2]
 source = "apt"
@@ -98,16 +133,6 @@ apt_dependencies = [
 packages.install_command = "pip3 install"
 packages.install_list = [
   "pynvim",
-]
-
-[asdf]
-source = "git"
-git.repo = "https://github.com/asdf-vm/asdf.git"
-git.release = "0.7.8"
-apt_dependencies = [
-  "libreadline-dev",
-  "libssl-dev",
-  "zlib1g-dev",
 ]
 
 [ruby]
