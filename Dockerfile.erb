@@ -72,8 +72,10 @@ COPY dotfiles /root/dotfiles
 # don't install nvim plugins yet; the rake task shells out, and we need to
 # define a "nvim" function to run the AppImage.
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH rake scripts:install configs:install docker_env:install
+# now that aliases_shared has been installed, we can define the "nvim"
+# function.
 RUN printf "nvim() {\n  /root/.local/bin/nvim/squashfs-root/AppRun \"\$@\"\n}\n" >> ~/.aliases_shared
-# source the function we just defined
+# update commands in rake task to source the function we just defined
 RUN sed -i 's/bash -c/BASH_ENV=~\/.aliases_shared bash -c/g' /root/dotfiles/Rakefile
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH rake plugins:install
 
