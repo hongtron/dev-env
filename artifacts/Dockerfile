@@ -16,31 +16,7 @@ ENV TERM=xterm-256color-italic
 
 # Common packages
 RUN apt-get update
-
-RUN apt-get install -y autoconf
-RUN apt-get install -y automake
-RUN apt-get install -y build-essential
-RUN apt-get install -y cmake
-RUN apt-get install -y curl
-RUN apt-get install -y docker
-RUN apt-get install -y docker-compose
-RUN apt-get install -y git
-RUN apt-get install -y gnupg2
-RUN apt-get install -y htop
-RUN apt-get install -y iputils-ping
-RUN apt-get install -y jq
-RUN apt-get install -y libevent-dev
-RUN apt-get install -y libncurses5-dev
-RUN apt-get install -y man
-RUN apt-get install -y net-tools
-RUN apt-get install -y netcat-openbsd
-RUN apt-get install -y p7zip-full
-RUN apt-get install -y tzdata
-RUN apt-get install -y unar
-RUN apt-get install -y unzip
-RUN apt-get install -y vim
-RUN apt-get install -y wget
-RUN apt-get install -y zsh
+RUN apt-get install -y autoconf automake build-essential cmake curl docker docker-compose git gnupg2 htop iputils-ping jq libevent-dev libncurses5-dev man net-tools netcat-openbsd p7zip-full tzdata unar unzip vim wget zsh
 SHELL ["/bin/bash", "-c"]
 
 WORKDIR /root
@@ -55,11 +31,9 @@ RUN ./nvim.appimage --appimage-extract
 WORKDIR /root
 COPY tool-versions /root/.tool-versions
 
-RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.7.8
+RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.0
 RUN echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc
 RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
-RUN echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
-RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
 
 
 
@@ -127,8 +101,10 @@ COPY dotfiles /root/dotfiles
 # don't install nvim plugins yet; the rake task shells out, and we need to
 # define a "nvim" function to run the AppImage.
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH rake scripts:install configs:install docker_env:install
+# now that aliases_shared has been installed, we can define the "nvim"
+# function.
 RUN printf "nvim() {\n  /root/.local/bin/nvim/squashfs-root/AppRun \"\$@\"\n}\n" >> ~/.aliases_shared
-# source the function we just defined
+# update commands in rake task to source the function we just defined
 RUN sed -i 's/bash -c/BASH_ENV=~\/.aliases_shared bash -c/g' /root/dotfiles/Rakefile
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH rake plugins:install
 
