@@ -37,26 +37,12 @@ RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
 
 
 
-
-RUN apt-get install -y byacc
-RUN apt-get install -y pkg-config
+RUN apt-get install -y byacc pkg-config
 RUN /root/.asdf/bin/asdf plugin-add tmux
 
 RUN PATH=/root/.asdf/bin:$PATH asdf install tmux 3.1a
 
-
-RUN apt-get install -y libffi-dev
-RUN apt-get install -y liblzma-dev
-RUN apt-get install -y libncurses5-dev
-RUN apt-get install -y libncursesw5-dev
-RUN apt-get install -y libreadline-dev
-RUN apt-get install -y libsqlite3-dev
-RUN apt-get install -y libssl-dev
-RUN apt-get install -y llvm
-RUN apt-get install -y python-openssl
-RUN apt-get install -y tk-dev
-RUN apt-get install -y xz-utils
-RUN apt-get install -y zlib1g-dev
+RUN apt-get install -y libffi-dev liblzma-dev libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev libssl-dev llvm python-openssl tk-dev xz-utils zlib1g-dev
 RUN /root/.asdf/bin/asdf plugin-add python
 
 RUN PATH=/root/.asdf/bin:$PATH asdf install python 3.8.2
