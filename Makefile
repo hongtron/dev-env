@@ -7,4 +7,5 @@ push:
 	docker push hongtron/dev-env:latest
 
 update:
+	git submodule init
 	git submodule update --recursive --remote
