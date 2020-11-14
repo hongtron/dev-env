@@ -1,6 +1,6 @@
 .PHONY: build
 
-build:
+build: update
 	./generate && docker build -t hongtron/dev-env ./artifacts/
 
 push:
