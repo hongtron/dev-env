@@ -127,9 +127,9 @@ packages.install_list = [
 source = "asdf"
 asdf.versions = ["1.47.0"]
 
-[java]
-source = "asdf"
-asdf.versions = ["adopt-openjdk-13.0.2+8"]
+# [java]
+# source = "asdf"
+# asdf.versions = ["adopt-openjdk-13.0.2+8"]
 
 [nodejs]
 source = "asdf"
