@@ -16,9 +16,7 @@ ENV TERM=xterm-256color-italic
 
 # Common packages
 RUN apt-get update
-<% tools_for_source("apt").keys.each do |package| %>
-RUN apt-get install -y <%= package -%>
-<% end -%>
+RUN apt-get install -y <%= tools_for_source("apt").keys.join(" ") -%>
 
 SHELL ["/bin/bash", "-c"]
 
