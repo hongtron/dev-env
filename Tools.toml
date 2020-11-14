@@ -72,7 +72,7 @@ source = "apt"
 
 [tmux]
 source = "asdf"
-asdf.versions = ["3.1a"]
+asdf.versions = ["3.1c"]
 apt_dependencies = [
   "byacc",
   "pkg-config",
@@ -103,7 +103,7 @@ packages.install_list = [
 [asdf]
 source = "git"
 git.repo = "https://github.com/asdf-vm/asdf.git"
-git.release = "0.7.8"
+git.release = "0.8.0"
 apt_dependencies = [
   "libreadline-dev",
   "libssl-dev",
@@ -112,7 +112,7 @@ apt_dependencies = [
 
 [ruby]
 source = "asdf"
-asdf.versions = ["2.7.1"]
+asdf.versions = ["2.7.2"]
 packages.install_command = "gem install"
 packages.install_list = [
   "bundler",
@@ -125,7 +125,7 @@ packages.install_list = [
 
 [rust]
 source = "asdf"
-asdf.versions = ["1.43.0"]
+asdf.versions = ["1.47.0"]
 
 [java]
 source = "asdf"
@@ -133,11 +133,11 @@ asdf.versions = ["adopt-openjdk-13.0.2+8"]
 
 [nodejs]
 source = "asdf"
-asdf.versions = ["14.1.0"] # needed for vim-coc
+asdf.versions = ["14.15.0"] # needed for vim-coc
 pre_install_commands = [
   "~/.asdf/plugins/nodejs/bin/import-release-team-keyring",
 ]
 
 [yarn]
 source = "asdf"
-asdf.versions = ["1.22.4"] # needed for vim-coc
+asdf.versions = ["1.22.5"] # needed for vim-coc

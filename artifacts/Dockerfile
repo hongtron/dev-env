@@ -40,7 +40,7 @@ RUN echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
 RUN apt-get install -y byacc pkg-config
 RUN /root/.asdf/bin/asdf plugin-add tmux
 
-RUN PATH=/root/.asdf/bin:$PATH asdf install tmux 3.1a
+RUN PATH=/root/.asdf/bin:$PATH asdf install tmux 3.1c
 
 RUN apt-get install -y libffi-dev liblzma-dev libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev libssl-dev llvm python-openssl tk-dev xz-utils zlib1g-dev
 RUN /root/.asdf/bin/asdf plugin-add python
@@ -50,24 +50,20 @@ RUN PATH=/root/.asdf/bin:$PATH asdf install python 2.7.16
 
 RUN /root/.asdf/bin/asdf plugin-add ruby
 
-RUN PATH=/root/.asdf/bin:$PATH asdf install ruby 2.7.1
+RUN PATH=/root/.asdf/bin:$PATH asdf install ruby 2.7.2
 
 RUN /root/.asdf/bin/asdf plugin-add rust
 
-RUN PATH=/root/.asdf/bin:$PATH asdf install rust 1.43.0
-
-RUN /root/.asdf/bin/asdf plugin-add java
-
-RUN PATH=/root/.asdf/bin:$PATH asdf install java adopt-openjdk-13.0.2+8
+RUN PATH=/root/.asdf/bin:$PATH asdf install rust 1.47.0
 
 RUN /root/.asdf/bin/asdf plugin-add nodejs
 RUN /bin/bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
 
-RUN PATH=/root/.asdf/bin:$PATH asdf install nodejs 14.1.0
+RUN PATH=/root/.asdf/bin:$PATH asdf install nodejs 14.15.0
 
 RUN /root/.asdf/bin/asdf plugin-add yarn
 
-RUN PATH=/root/.asdf/bin:$PATH asdf install yarn 1.22.4
+RUN PATH=/root/.asdf/bin:$PATH asdf install yarn 1.22.5
 
 
 RUN PATH=/root/.asdf/shims:/root/.asdf/bin:$PATH pip3 install pynvim
